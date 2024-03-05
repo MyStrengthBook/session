@@ -41,13 +41,13 @@ npm install @rill/session
 # Example
 
 ```javascript
-const app = require('rill')()
+const app = require('rill')();
 
 // Set up a session. (Defaults to in memory)
-app.use(require('@rill/session')())
+app.use(require('@rill/session')());
 
 // Use the session.
-app.use(({ session })=> {
+app.use(({ session }) => {
   // Sessions are instances of a "Receptacle" cache.
   session.set('a', 1, { ttl: 1000 });
   session.get('a'); // 1
@@ -87,10 +87,17 @@ app.use(({ session })=> {
   cache: !process.browser && {
     uri: 'mongodb://user:pass@localhost:27017/dbname' // Default is in memory (see keyv uri).
   }
+  /**
+   * Passed to keyv, time to live in milliseconds.
+   * Time that the session cache should persist in the server
+   * By default this will be undefined
+   */
+  keyvTtl: 60000
 }
 ```
 
 # Implementation Details
+
 Rill sessions work in both the client and server however only the initial session from the server with the user will be synced using an XHR request.
 
 In the browser the initial session is loaded from the server via XHR and then stored in memory.
@@ -99,6 +106,6 @@ In the browser the initial session is loaded from the server via XHR and then st
 
 ### Contributions
 
-* Use `npm test` to run tests.
+- Use `npm test` to run tests.
 
 Please feel free to create a PR!

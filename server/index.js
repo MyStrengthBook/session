@@ -40,10 +40,12 @@ module.exports = function (opts) {
             res.body = 'window["' + URL + '"] = ' + (data || '{}')
           })
         case 'POST':
-          return cache.set(String(req.body.id), JSON.stringify(req.body)).then(function () {
-            res.status = 200
-            res.body = 'ok'
-          })
+          return cache
+            .set(String(req.body.id), JSON.stringify(req.body), opts.keyvTtl)
+            .then(function () {
+              res.status = 200
+              res.body = 'ok'
+            })
         default: return
       }
     }
@@ -91,7 +93,9 @@ module.exports = function (opts) {
         }
 
         // Persist session.
-        return cache.set(String(session.id), JSON.stringify(session)).then(rethrow)
+        return cache
+          .set(String(session.id), JSON.stringify(session), opts.keyvTtl)
+          .then(rethrow)
 
         // Utility to rethrow an error if there was one.
         function rethrow () { if (err) { throw err } }
