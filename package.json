@@ -6,7 +6,7 @@
   "browser": "browser/index.js",
   "bugs": "https://github.com/rill-js/session/issues",
   "dependencies": {
-    "keyv": "^3.0.0",
+    "keyv": "^4.5.4",
     "receptacle": "^1.1.0"
   },
   "devDependencies": {
