@@ -2,6 +2,7 @@
 
 var Cache = require('keyv')
 var Receptacle = require('receptacle')
+var Cron = require('node-cron')
 
 /**
  * Adds a session to a rill app and persists it between browser and server.
@@ -18,6 +19,15 @@ module.exports = function (opts) {
   var ID = opts.cache.namespace = opts.key || 'rill_session'
   var URL = '/__' + encodeURIComponent(ID) + '__'
   var cache = new Cache(opts.cache)
+
+  const ttl = opts.keyvTtl
+  const ttlSeconds = ttl / 1000
+
+  if (opts.cache?.useGridFS && ttlSeconds) {
+    Cron.schedule(`*/${ttlSeconds} * * * * *`, () => {
+      cache.opts.store.clearExpired()
+    })
+  }
 
   return function sessionMiddleware (ctx, next) {
     var req = ctx.req
@@ -94,7 +104,7 @@ module.exports = function (opts) {
 
         // Persist session.
         return cache
-          .set(String(session.id), JSON.stringify(session), opts.keyvTtl)
+          .set(String(session.id), JSON.stringify(session), ttl)
           .then(rethrow)
 
         // Utility to rethrow an error if there was one.
