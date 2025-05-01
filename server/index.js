@@ -123,14 +123,6 @@ module.exports = function (opts) {
           res.append('Link', '<' + URL + '>; rel=preload; as=script;');
         }
 
-        console.log('saveSession', {
-          sessionId,
-          isNewSession,
-          sessionModified,
-          needsRefresh,
-          refreshThreshold,
-        });
-
         if (isNewSession || sessionModified || needsRefresh) {
           refreshCookie();
           return saveToStore();
